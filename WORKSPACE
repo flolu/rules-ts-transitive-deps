@@ -70,3 +70,45 @@ swc_register_toolchains(
     name = "swc",
     swc_version = LATEST_SWC_VERSION,
 )
+
+###
+# Setup rules_pkg
+# https://github.com/bazelbuild/rules_pkg/releases
+###
+http_archive(
+    name = "rules_pkg",
+    sha256 = "eea0f59c28a9241156a47d7a8e32db9122f3d50b505fae0f33de6ce4d9b61834",
+    urls = ["https://github.com/bazelbuild/rules_pkg/releases/download/0.8.0/rules_pkg-0.8.0.tar.gz"],
+)
+
+load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
+
+rules_pkg_dependencies()
+
+###
+# Setup rules_docker
+# https://github.com/bazelbuild/rules_docker/releases
+###
+http_archive(
+    name = "io_bazel_rules_docker",
+    sha256 = "b1e80761a8a8243d03ebca8845e9cc1ba6c82ce7c5179ce2b295cd36f7e394bf",
+    urls = ["https://github.com/bazelbuild/rules_docker/releases/download/v0.25.0/rules_docker-v0.25.0.tar.gz"],
+)
+
+load("@io_bazel_rules_docker//repositories:repositories.bzl", rules_docker_repositories = "repositories")
+
+rules_docker_repositories()
+
+load("@io_bazel_rules_docker//repositories:deps.bzl", rules_docker_deps = "deps")
+
+rules_docker_deps()
+
+load("@io_bazel_rules_docker//container:container.bzl", "container_pull")
+
+container_pull(
+    name = "debian_amd64",
+    architecture = "amd64",
+    digest = "sha256:9a67b70d0ba1d7c7690f917eedd8d24974dd8fd493205368b1e555a90c954208",
+    registry = "docker.io",
+    repository = "debian",
+)

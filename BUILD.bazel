@@ -5,6 +5,9 @@ load("@aspect_rules_swc//swc:defs.bzl", "swc")
 load("@aspect_rules_js//js:defs.bzl", "js_binary")
 load("@aspect_rules_js//npm:defs.bzl", "npm_link_package")
 load("@bazel_skylib//lib:partial.bzl", "partial")
+load("@io_bazel_rules_docker//container:container.bzl", "container_image")
+load("@io_bazel_rules_docker//container:layer.bzl", "container_layer")
+load("//:js_image_layer.bzl", "js_image_layer")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -43,6 +46,11 @@ ts_project(
     deps = [
         "//:node_modules/@org/lib1",
         "//:node_modules/@types/node",
+
+        # Transitive dependencies need to be added to make them available
+        # in the `container_image`. But they are not necessary for `js_binary`
+        # "//:node_modules/@faker-js/faker",
+        # "//:node_modules/@org/lib2",
     ],
 )
 
@@ -50,4 +58,33 @@ js_binary(
     name = "bin",
     data = [":app"],
     entry_point = "main.js",
+)
+
+js_image_layer(
+    name = "layers",
+    binary = ":bin",
+    root = "/app",
+)
+
+container_layer(
+    name = "app_layer",
+    tars = [":layers/app.tar"],
+)
+
+container_layer(
+    name = "node_modules_layer",
+    tars = [":layers/node_modules.tar"],
+)
+
+container_image(
+    name = "image",
+    architecture = "amd64",
+    base = "@debian_amd64//image",
+    cmd = ["/app/bin.sh"],
+    entrypoint = ["bash"],
+    layers = [
+        ":app_layer",
+        ":node_modules_layer",
+    ],
+    stamp = "@io_bazel_rules_docker//stamp:always",
 )
