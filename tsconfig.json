@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "composite": true,
+    "target": "ES2020",
+    "module": "commonjs",
+    "declaration": true,
+    "baseUrl": ".",
+    "paths": {
+      "@org/lib1": ["./lib1/"],
+      "@org/lib2": ["./lib2/"]
+    }
+  },
+  "exclude": ["node_modules", "bazel-*/**"]
+}
