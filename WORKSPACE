@@ -40,9 +40,11 @@ npm_repositories()
 ###
 http_archive(
     name = "aspect_rules_ts",
-    sha256 = "5b501313118b06093497b6429f124b973f99d1eb5a27a1cc372e5d6836360e9d",
-    strip_prefix = "rules_ts-1.0.2",
-    url = "https://github.com/aspect-build/rules_ts/archive/refs/tags/v1.0.2.tar.gz",
+    patch_args = ["-p1"],
+    patches = ["//:rules_ts.patch"],
+    sha256 = "6406905c5f7c5ca6dedcca5dacbffbf32bb2a5deb77f50da73e7195b2b7e8cbc",
+    strip_prefix = "rules_ts-1.0.5",
+    url = "https://github.com/aspect-build/rules_ts/archive/refs/tags/v1.0.5.tar.gz",
 )
 
 load("@aspect_rules_ts//ts:repositories.bzl", "rules_ts_dependencies")
