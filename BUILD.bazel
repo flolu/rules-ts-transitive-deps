@@ -46,11 +46,6 @@ ts_project(
     deps = [
         "//:node_modules/@org/lib1",
         "//:node_modules/@types/node",
-
-        # Transitive dependencies need to be added to make them available
-        # in the `container_image`. But they are not necessary for `js_binary`
-        # "//:node_modules/@faker-js/faker",
-        # "//:node_modules/@org/lib2",
     ],
 )
 
